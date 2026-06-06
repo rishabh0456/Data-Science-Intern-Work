@@ -1,0 +1,332 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDA Report: Raw Data Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-1: #3b82f6;
+            --accent-2: #8b5cf6;
+            --accent-3: #ec4899;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0.2) 0, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        h1 {
+            font-weight: 800;
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            background: -webkit-linear-gradient(45deg, var(--accent-1), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeIn 1s ease-out;
+        }
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 50px;
+        }
+        .kpi-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        .kpi-card:hover::before {
+            opacity: 1;
+        }
+        .kpi-title {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+        }
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+        }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .chart-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            height: 450px;
+        }
+        .chart-card.full-width {
+            grid-column: 1 / -1;
+            height: 500px;
+        }
+        .chart-title {
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+        .chart-title::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--accent-2);
+            margin-right: 12px;
+        }
+        .chart-container {
+            position: relative;
+            height: calc(100% - 60px);
+            width: 100%;
+        }
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Exploratory Data Analysis</h1>
+            <div class="subtitle">Uncovering insights, correlations, and trends from our dataset using statistical modeling and premium visualizations.</div>
+        </div>
+        
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Total Transactions</div>
+                <div class="kpi-value">1,050</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Total Revenue</div>
+                <div class="kpi-value">$2,584,754.72</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Average Price</div>
+                <div class="kpi-value">$287.25</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Average Age</div>
+                <div class="kpi-value">43.4</div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card full-width">
+                <div class="chart-title">Revenue Trend Over Time</div>
+                <div class="chart-container">
+                    <canvas id="timeSeriesChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="chart-title">Revenue by Category</div>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="chart-title">Revenue by Region</div>
+                <div class="chart-container">
+                    <canvas id="regionChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card full-width">
+                <div class="chart-title">Customer Age vs. Transaction Revenue</div>
+                <div class="chart-container">
+                    <canvas id="scatterChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data injected from Python
+        const catData = [{"Category":"Books","Total Sales":493647.8036401024},{"Category":"Clothing","Total Sales":437966.252653605},{"Category":"Electronics","Total Sales":655066.719078477},{"Category":"Home & Kitchen","Total Sales":482467.4136065891},{"Category":"Sports","Total Sales":380233.8524651689},{"Category":"Unknown","Total Sales":135372.676496869}];
+        const regData = [{"Region":"East","Total Sales":538184.6152876171},{"Region":"North","Total Sales":724708.6778616784},{"Region":"South","Total Sales":593507.9363310859},{"Region":"West","Total Sales":728353.4884604299}];
+        const dailyData = [{"Day":"2025-01-01","Total Sales":54012.9924799218},{"Day":"2025-01-02","Total Sales":46500.597986428},{"Day":"2025-01-03","Total Sales":50046.4435521065},{"Day":"2025-01-04","Total Sales":51984.3361554642},{"Day":"2025-01-05","Total Sales":36709.049821374},{"Day":"2025-01-06","Total Sales":50410.0735186437},{"Day":"2025-01-07","Total Sales":38226.9710387942},{"Day":"2025-01-08","Total Sales":44703.0207894179},{"Day":"2025-01-09","Total Sales":53452.1260361183},{"Day":"2025-01-10","Total Sales":44207.9070055037},{"Day":"2025-01-11","Total Sales":272333.010071162},{"Day":"2025-01-12","Total Sales":44157.7014400709},{"Day":"2025-01-13","Total Sales":45109.9745575379},{"Day":"2025-01-14","Total Sales":56412.7993569153},{"Day":"2025-01-15","Total Sales":50889.5980341181},{"Day":"2025-01-16","Total Sales":49795.1199420054},{"Day":"2025-01-17","Total Sales":55732.7687492206},{"Day":"2025-01-18","Total Sales":42246.1029429281},{"Day":"2025-01-19","Total Sales":62029.2608673197},{"Day":"2025-01-20","Total Sales":46636.2764911216},{"Day":"2025-01-21","Total Sales":31696.3405672798},{"Day":"2025-01-22","Total Sales":83309.239849295},{"Day":"2025-01-23","Total Sales":52871.9227043151},{"Day":"2025-01-24","Total Sales":116399.7434411386},{"Day":"2025-01-25","Total Sales":87358.3772166532},{"Day":"2025-01-26","Total Sales":51772.4269964929},{"Day":"2025-01-27","Total Sales":51447.2745074932},{"Day":"2025-01-28","Total Sales":135964.7602225477},{"Day":"2025-01-29","Total Sales":47432.5276160315},{"Day":"2025-01-30","Total Sales":60093.8787240826},{"Day":"2025-01-31","Total Sales":56289.7417954426},{"Day":"2025-02-01","Total Sales":76149.4870445579},{"Day":"2025-02-02","Total Sales":98713.0066416625},{"Day":"2025-02-03","Total Sales":43642.720068204},{"Day":"2025-02-04","Total Sales":34567.3537764927},{"Day":"2025-02-05","Total Sales":93590.4143265437},{"Day":"2025-02-06","Total Sales":42576.9958582808},{"Day":"2025-02-07","Total Sales":42103.6632543601},{"Day":"2025-02-08","Total Sales":43362.0454849016},{"Day":"2025-02-09","Total Sales":55647.0995576906},{"Day":"2025-02-10","Total Sales":58832.1896644596},{"Day":"2025-02-11","Total Sales":25337.3777867137}];
+        const scatterData = [{"CustomerAge":29.0,"Revenue":3964.2133268948},{"CustomerAge":24.0,"Revenue":792.3242107682},{"CustomerAge":26.0,"Revenue":3768.3616472184},{"CustomerAge":53.0,"Revenue":2393.7058216545},{"CustomerAge":19.0,"Revenue":5414.8102852584},{"CustomerAge":39.0,"Revenue":234.5115745016},{"CustomerAge":53.0,"Revenue":632.5731687289},{"CustomerAge":21.0,"Revenue":5361.2937441161},{"CustomerAge":27.0,"Revenue":137.353439829},{"CustomerAge":59.0,"Revenue":913.5790251963},{"CustomerAge":44.0,"Revenue":4437.2510704205},{"CustomerAge":34.0,"Revenue":5689.2916955869},{"CustomerAge":28.0,"Revenue":915.8504679746},{"CustomerAge":42.0,"Revenue":1285.1561373367},{"CustomerAge":20.0,"Revenue":955.7662879055},{"CustomerAge":35.0,"Revenue":1379.1424301436},{"CustomerAge":20.0,"Revenue":2696.3028103699},{"CustomerAge":29.0,"Revenue":192.3252825969},{"CustomerAge":23.0,"Revenue":3608.1428322314},{"CustomerAge":28.0,"Revenue":156.6684126816},{"CustomerAge":25.0,"Revenue":5074.7658494524},{"CustomerAge":20.0,"Revenue":1873.0801567052},{"CustomerAge":46.0,"Revenue":1902.181982614},{"CustomerAge":35.0,"Revenue":2905.6062439133},{"CustomerAge":59.0,"Revenue":1685.7452679893},{"CustomerAge":18.0,"Revenue":4572.9840179505},{"CustomerAge":37.0,"Revenue":442.1446015693},{"CustomerAge":52.0,"Revenue":2194.3809353568},{"CustomerAge":22.0,"Revenue":1216.2392715995},{"CustomerAge":49.0,"Revenue":4326.3649620132},{"CustomerAge":64.0,"Revenue":1542.187364804},{"CustomerAge":38.0,"Revenue":494.395528316},{"CustomerAge":56.0,"Revenue":497.8197697999},{"CustomerAge":60.0,"Revenue":4260.4663165217},{"CustomerAge":33.0,"Revenue":864.7298858124},{"CustomerAge":21.0,"Revenue":693.0225023774},{"CustomerAge":18.0,"Revenue":486.3894827623},{"CustomerAge":47.0,"Revenue":5905.9973996775},{"CustomerAge":32.0,"Revenue":108.2325126089},{"CustomerAge":30.0,"Revenue":2180.8741829935},{"CustomerAge":36.0,"Revenue":1465.9233748313},{"CustomerAge":46.0,"Revenue":720.8827541922},{"CustomerAge":46.0,"Revenue":404.174231763},{"CustomerAge":45.0,"Revenue":69.0736240378},{"CustomerAge":50.0,"Revenue":3756.9337907311},{"CustomerAge":42.0,"Revenue":514.0624549347},{"CustomerAge":44.0,"Revenue":396.3391981941},{"CustomerAge":37.0,"Revenue":1050.4013430595},{"CustomerAge":60.0,"Revenue":1285.3240914245},{"CustomerAge":60.0,"Revenue":4136.5728826843},{"CustomerAge":37.0,"Revenue":160.297430868},{"CustomerAge":20.0,"Revenue":455.5179008722},{"CustomerAge":66.0,"Revenue":5267.1510054603},{"CustomerAge":56.0,"Revenue":326.4529692804},{"CustomerAge":51.0,"Revenue":1430.4036294716},{"CustomerAge":68.0,"Revenue":1567.2431143119},{"CustomerAge":56.0,"Revenue":1024.4078677228},{"CustomerAge":27.0,"Revenue":2788.6012488692},{"CustomerAge":27.0,"Revenue":3421.529377202},{"CustomerAge":30.0,"Revenue":611.7195438904},{"CustomerAge":54.0,"Revenue":882.5761675194},{"CustomerAge":62.0,"Revenue":5525.7774678874},{"CustomerAge":25.0,"Revenue":1926.9840353492},{"CustomerAge":36.0,"Revenue":771.0370887587},{"CustomerAge":31.0,"Revenue":4835.4451907454},{"CustomerAge":38.0,"Revenue":44.8928405208},{"CustomerAge":43.0,"Revenue":1332.0045289112},{"CustomerAge":59.0,"Revenue":3084.374729608},{"CustomerAge":53.0,"Revenue":78.9934449574},{"CustomerAge":64.0,"Revenue":1076.6744935944},{"CustomerAge":57.0,"Revenue":2847.2344626392},{"CustomerAge":46.0,"Revenue":3574.2824789631},{"CustomerAge":35.0,"Revenue":1118.4999139717},{"CustomerAge":25.0,"Revenue":2324.2651425659},{"CustomerAge":69.0,"Revenue":1200.6810742438},{"CustomerAge":57.0,"Revenue":1949.4484173544},{"CustomerAge":67.0,"Revenue":212.7874186716},{"CustomerAge":56.0,"Revenue":769.3444278907},{"CustomerAge":61.0,"Revenue":1294.9255764007},{"CustomerAge":46.0,"Revenue":4269.0690501747},{"CustomerAge":43.0,"Revenue":2570.3122746734},{"CustomerAge":34.0,"Revenue":1018.3185260782},{"CustomerAge":20.0,"Revenue":570.8729044141},{"CustomerAge":35.0,"Revenue":286.0784209348},{"CustomerAge":42.0,"Revenue":2553.2134176983},{"CustomerAge":54.0,"Revenue":4621.2158460677},{"CustomerAge":26.0,"Revenue":1569.6036463842},{"CustomerAge":66.0,"Revenue":218.5396430676},{"CustomerAge":50.0,"Revenue":1161.1854878392},{"CustomerAge":62.0,"Revenue":2997.2204028606},{"CustomerAge":22.0,"Revenue":586.0414985635},{"CustomerAge":29.0,"Revenue":3696.4333046691},{"CustomerAge":49.0,"Revenue":1271.4985347095},{"CustomerAge":33.0,"Revenue":1950.2490347671},{"CustomerAge":20.0,"Revenue":254.1452843091},{"CustomerAge":35.0,"Revenue":161.7768478812},{"CustomerAge":57.0,"Revenue":1229.8955742888},{"CustomerAge":30.0,"Revenue":1024.6997324803},{"CustomerAge":43.0,"Revenue":6366.8984551565},{"CustomerAge":61.0,"Revenue":4369.5169112656},{"CustomerAge":65.0,"Revenue":4318.0414791387},{"CustomerAge":28.0,"Revenue":3129.1214567008},{"CustomerAge":28.0,"Revenue":996.9495840086},{"CustomerAge":36.0,"Revenue":1105.2810824145},{"CustomerAge":47.0,"Revenue":606.214480262},{"CustomerAge":65.0,"Revenue":1723.6003348049},{"CustomerAge":42.0,"Revenue":406.0422087335},{"CustomerAge":67.0,"Revenue":538.60749845},{"CustomerAge":38.0,"Revenue":1110.3992054132},{"CustomerAge":45.0,"Revenue":10.7669015438},{"CustomerAge":18.0,"Revenue":236.5248248903},{"CustomerAge":52.0,"Revenue":112.3470117691},{"CustomerAge":36.0,"Revenue":2233.2621776474},{"CustomerAge":69.0,"Revenue":1466.7610416686},{"CustomerAge":39.0,"Revenue":1391.7824318932},{"CustomerAge":43.0,"Revenue":2821.6334883471},{"CustomerAge":32.0,"Revenue":1799.2185922714},{"CustomerAge":59.0,"Revenue":1285.1561373367},{"CustomerAge":22.0,"Revenue":913.5309899383},{"CustomerAge":25.0,"Revenue":1658.7461305843},{"CustomerAge":36.0,"Revenue":5138.5921300763},{"CustomerAge":43.0,"Revenue":892.4528919574},{"CustomerAge":43.0,"Revenue":4804.6644615867},{"CustomerAge":48.0,"Revenue":1729.3702905369},{"CustomerAge":55.0,"Revenue":1537.1583402972},{"CustomerAge":32.0,"Revenue":1722.0709484405},{"CustomerAge":53.0,"Revenue":111.4263634348},{"CustomerAge":66.0,"Revenue":1285.1561373367},{"CustomerAge":43.0,"Revenue":2771.432460891},{"CustomerAge":66.0,"Revenue":917.6149883239},{"CustomerAge":66.0,"Revenue":4326.1445254166},{"CustomerAge":37.0,"Revenue":951.0756700026},{"CustomerAge":58.0,"Revenue":2684.2581484011},{"CustomerAge":48.0,"Revenue":787.5344450327},{"CustomerAge":50.0,"Revenue":5160.2140311527},{"CustomerAge":30.0,"Revenue":1640.1807483817},{"CustomerAge":21.0,"Revenue":2494.1280427644},{"CustomerAge":42.0,"Revenue":275.3288175059},{"CustomerAge":29.0,"Revenue":5957.5687346662},{"CustomerAge":19.0,"Revenue":408.9156558875},{"CustomerAge":49.0,"Revenue":3716.8826678771},{"CustomerAge":58.0,"Revenue":2834.5337969621},{"CustomerAge":54.0,"Revenue":448.0915111099},{"CustomerAge":24.0,"Revenue":814.9321846452},{"CustomerAge":33.0,"Revenue":3327.1393921126},{"CustomerAge":18.0,"Revenue":1891.4397332688},{"CustomerAge":23.0,"Revenue":1542.187364804},{"CustomerAge":64.0,"Revenue":3084.374729608},{"CustomerAge":46.0,"Revenue":4990.6132340495},{"CustomerAge":27.0,"Revenue":2016.4761089995},{"CustomerAge":48.0,"Revenue":1028.1249098693},{"CustomerAge":39.0,"Revenue":787.1805285081},{"CustomerAge":68.0,"Revenue":2258.1626165309},{"CustomerAge":51.0,"Revenue":5345.3153919605},{"CustomerAge":18.0,"Revenue":1677.5412424547},{"CustomerAge":19.0,"Revenue":4336.3616866611},{"CustomerAge":49.0,"Revenue":3087.9802143285},{"CustomerAge":60.0,"Revenue":4230.8048131889},{"CustomerAge":32.0,"Revenue":981.4090413172},{"CustomerAge":45.0,"Revenue":2730.977245309},{"CustomerAge":20.0,"Revenue":1823.6748353486},{"CustomerAge":44.0,"Revenue":1665.4021266608},{"CustomerAge":60.0,"Revenue":2802.6706726586},{"CustomerAge":61.0,"Revenue":896.5119359046},{"CustomerAge":63.0,"Revenue":3295.8988717728},{"CustomerAge":64.0,"Revenue":319.2044631628},{"CustomerAge":62.0,"Revenue":3321.6548124192},{"CustomerAge":31.0,"Revenue":271.9389342098},{"CustomerAge":33.0,"Revenue":2894.560258592},{"CustomerAge":64.0,"Revenue":1389.7663945402},{"CustomerAge":62.0,"Revenue":1408.0576461128},{"CustomerAge":23.0,"Revenue":324.110575057},{"CustomerAge":23.0,"Revenue":3341.4059570754},{"CustomerAge":45.0,"Revenue":2570.3122746734},{"CustomerAge":21.0,"Revenue":1218.777662232},{"CustomerAge":51.0,"Revenue":142.0716504211},{"CustomerAge":34.0,"Revenue":185.2946486287},{"CustomerAge":20.0,"Revenue":953.3325686187},{"CustomerAge":65.0,"Revenue":241.8085546454},{"CustomerAge":43.0,"Revenue":3598.4371845427},{"CustomerAge":66.0,"Revenue":1177.5532451217},{"CustomerAge":46.0,"Revenue":1523.7087080538},{"CustomerAge":35.0,"Revenue":952.4012141546},{"CustomerAge":66.0,"Revenue":199.4048483433},{"CustomerAge":21.0,"Revenue":823.2869922202},{"CustomerAge":44.0,"Revenue":704.166872704},{"CustomerAge":67.0,"Revenue":609.8849623948},{"CustomerAge":42.0,"Revenue":2647.2165450796},{"CustomerAge":65.0,"Revenue":2394.9793478953},{"CustomerAge":38.0,"Revenue":749.9814656385},{"CustomerAge":47.0,"Revenue":2056.2498197387},{"CustomerAge":67.0,"Revenue":1481.8997039088},{"CustomerAge":45.0,"Revenue":2921.611154343},{"CustomerAge":39.0,"Revenue":347.2543755323},{"CustomerAge":65.0,"Revenue":2762.1764831931},{"CustomerAge":30.0,"Revenue":5526.8424249776},{"CustomerAge":31.0,"Revenue":15.9305272203},{"CustomerAge":36.0,"Revenue":1689.1047264563},{"CustomerAge":57.0,"Revenue":1166.1945783579},{"CustomerAge":27.0,"Revenue":1515.9758365295},{"CustomerAge":33.0,"Revenue":116.2013176235},{"CustomerAge":55.0,"Revenue":1028.1249098693},{"CustomerAge":64.0,"Revenue":1014.373185347},{"CustomerAge":21.0,"Revenue":1064.4183868674},{"CustomerAge":46.0,"Revenue":915.0212086247},{"CustomerAge":49.0,"Revenue":2204.8787905714},{"CustomerAge":24.0,"Revenue":1567.0383830212},{"CustomerAge":46.0,"Revenue":377.8794893492},{"CustomerAge":37.0,"Revenue":567.4564588347},{"CustomerAge":37.0,"Revenue":2293.599784511},{"CustomerAge":60.0,"Revenue":132.9736640567},{"CustomerAge":53.0,"Revenue":4448.4475271754},{"CustomerAge":34.0,"Revenue":53701.2714891408},{"CustomerAge":40.0,"Revenue":5788.4223538521},{"CustomerAge":22.0,"Revenue":4211.8280166985},{"CustomerAge":37.0,"Revenue":1545.6994675054},{"CustomerAge":41.0,"Revenue":1600.9361440132},{"CustomerAge":40.0,"Revenue":168.1176688262},{"CustomerAge":50.0,"Revenue":4416.5648729738},{"CustomerAge":19.0,"Revenue":2313.281047206},{"CustomerAge":65.0,"Revenue":748.722037853},{"CustomerAge":62.0,"Revenue":3367.4820064064},{"CustomerAge":32.0,"Revenue":1006.014585517},{"CustomerAge":41.0,"Revenue":626.4605818339},{"CustomerAge":69.0,"Revenue":785.6232147148},{"CustomerAge":52.0,"Revenue":4880.3241959979},{"CustomerAge":45.0,"Revenue":1600.1955866611},{"CustomerAge":52.0,"Revenue":390.0459530175},{"CustomerAge":47.0,"Revenue":341.4161885627},{"CustomerAge":50.0,"Revenue":2173.6956955787},{"CustomerAge":53.0,"Revenue":329.0069523443},{"CustomerAge":44.0,"Revenue":5581.0463392299},{"CustomerAge":41.0,"Revenue":2313.281047206},{"CustomerAge":60.0,"Revenue":2570.3122746734},{"CustomerAge":38.0,"Revenue":1043.4631889013},{"CustomerAge":38.0,"Revenue":3743.5622929394},{"CustomerAge":47.0,"Revenue":5201.7848973321},{"CustomerAge":32.0,"Revenue":4239.0891455253},{"CustomerAge":31.0,"Revenue":2203.4828646472},{"CustomerAge":45.0,"Revenue":788.1159487957},{"CustomerAge":44.0,"Revenue":153.7212192825},{"CustomerAge":30.0,"Revenue":2388.9155701548},{"CustomerAge":50.0,"Revenue":1991.6549089954},{"CustomerAge":56.0,"Revenue":1596.7035050754},{"CustomerAge":36.0,"Revenue":640.1065906238},{"CustomerAge":38.0,"Revenue":233.6464697955},{"CustomerAge":35.0,"Revenue":3218.3667138987},{"CustomerAge":55.0,"Revenue":5889.412071485},{"CustomerAge":68.0,"Revenue":1125.2745113017},{"CustomerAge":62.0,"Revenue":333.39248108},{"CustomerAge":43.0,"Revenue":302.6373290624},{"CustomerAge":50.0,"Revenue":2885.7383270983},{"CustomerAge":28.0,"Revenue":6663.3701582875},{"CustomerAge":59.0,"Revenue":2289.5667146341},{"CustomerAge":29.0,"Revenue":434.6730129865},{"CustomerAge":40.0,"Revenue":2646.9838814853},{"CustomerAge":20.0,"Revenue":98164.1897882959},{"CustomerAge":19.0,"Revenue":1011.5225562622},{"CustomerAge":66.0,"Revenue":792.1435356413},{"CustomerAge":38.0,"Revenue":3341.4059570754},{"CustomerAge":58.0,"Revenue":303.4928536399},{"CustomerAge":21.0,"Revenue":408.617890608},{"CustomerAge":32.0,"Revenue":459.8575105776},{"CustomerAge":31.0,"Revenue":3854.0519329926},{"CustomerAge":64.0,"Revenue":2522.3204877493},{"CustomerAge":43.0,"Revenue":4847.6962725214},{"CustomerAge":52.0,"Revenue":461.3439593273},{"CustomerAge":34.0,"Revenue":1636.2989616498},{"CustomerAge":35.0,"Revenue":948.7342654452},{"CustomerAge":57.0,"Revenue":4405.7052805473},{"CustomerAge":43.0,"Revenue":392.8310877268},{"CustomerAge":68.0,"Revenue":2320.8103759176},{"CustomerAge":31.0,"Revenue":1186.6318731902},{"CustomerAge":68.0,"Revenue":2778.2279959582},{"CustomerAge":43.0,"Revenue":890.6779577008},{"CustomerAge":55.0,"Revenue":471.4455986933},{"CustomerAge":20.0,"Revenue":3279.8192913928},{"CustomerAge":18.0,"Revenue":4415.0605052029},{"CustomerAge":33.0,"Revenue":273.4484181903},{"CustomerAge":26.0,"Revenue":1667.9601109408},{"CustomerAge":24.0,"Revenue":3114.0462023588},{"CustomerAge":69.0,"Revenue":1340.188609231},{"CustomerAge":20.0,"Revenue":137.5537599812},{"CustomerAge":29.0,"Revenue":263.8006585792},{"CustomerAge":59.0,"Revenue":497.2150986078},{"CustomerAge":33.0,"Revenue":596.013973645},{"CustomerAge":29.0,"Revenue":587.5794082966},{"CustomerAge":36.0,"Revenue":2111.1058291414},{"CustomerAge":23.0,"Revenue":949.6265125289},{"CustomerAge":43.0,"Revenue":1533.1244551003},{"CustomerAge":19.0,"Revenue":1935.3009904283},{"CustomerAge":68.0,"Revenue":271.359448095},{"CustomerAge":39.0,"Revenue":2168.3764082259},{"CustomerAge":58.0,"Revenue":229.0572164651},{"CustomerAge":46.0,"Revenue":4582.1093094225},{"CustomerAge":20.0,"Revenue":3305.455547223},{"CustomerAge":30.0,"Revenue":3341.4059570754},{"CustomerAge":57.0,"Revenue":1929.5936963206},{"CustomerAge":43.0,"Revenue":1783.8182901152},{"CustomerAge":54.0,"Revenue":3737.8042588667},{"CustomerAge":36.0,"Revenue":863.5495817025},{"CustomerAge":18.0,"Revenue":152.6470006321},{"CustomerAge":22.0,"Revenue":2827.3435021407},{"CustomerAge":46.0,"Revenue":3341.4059570754},{"CustomerAge":51.0,"Revenue":56.4696367327},{"CustomerAge":62.0,"Revenue":685.4822091154},{"CustomerAge":69.0,"Revenue":4722.2019457843},{"CustomerAge":36.0,"Revenue":944.8275609638},{"CustomerAge":47.0,"Revenue":200.8461285022},{"CustomerAge":57.0,"Revenue":1454.3276077409},{"CustomerAge":64.0,"Revenue":3545.7235051574},{"CustomerAge":39.0,"Revenue":394.7428761427},{"CustomerAge":43.0,"Revenue":1285.1561373367},{"CustomerAge":36.0,"Revenue":4430.4592206545},{"CustomerAge":55.0,"Revenue":111.9738705016},{"CustomerAge":28.0,"Revenue":1028.5503508428},{"CustomerAge":29.0,"Revenue":780.2279111666},{"CustomerAge":40.0,"Revenue":412.2896885391},{"CustomerAge":49.0,"Revenue":4006.3187270765},{"CustomerAge":27.0,"Revenue":328.7139667868},{"CustomerAge":64.0,"Revenue":549.9092702856},{"CustomerAge":38.0,"Revenue":1848.7579872167},{"CustomerAge":54.0,"Revenue":299.6363507617},{"CustomerAge":22.0,"Revenue":4170.6455760545},{"CustomerAge":18.0,"Revenue":213.9237593512},{"CustomerAge":67.0,"Revenue":1683.1711736642},{"CustomerAge":64.0,"Revenue":3515.2935561723},{"CustomerAge":20.0,"Revenue":533.8112802888},{"CustomerAge":29.0,"Revenue":1840.9909933909},{"CustomerAge":57.0,"Revenue":6153.8242261415},{"CustomerAge":43.0,"Revenue":3290.7289743377},{"CustomerAge":43.0,"Revenue":1246.3899291698},{"CustomerAge":36.0,"Revenue":1950.0728155726},{"CustomerAge":39.0,"Revenue":2577.5664671558},{"CustomerAge":19.0,"Revenue":237.9566253466},{"CustomerAge":66.0,"Revenue":415.8421336942},{"CustomerAge":51.0,"Revenue":516.1407383053},{"CustomerAge":57.0,"Revenue":5863.529875815},{"CustomerAge":45.0,"Revenue":73.2453941264},{"CustomerAge":42.0,"Revenue":3861.9587024489},{"CustomerAge":22.0,"Revenue":1926.9781638166},{"CustomerAge":55.0,"Revenue":5949.0080611976},{"CustomerAge":37.0,"Revenue":191.3838084324},{"CustomerAge":55.0,"Revenue":1108.9296676598},{"CustomerAge":59.0,"Revenue":1273.0384135952},{"CustomerAge":31.0,"Revenue":1287.1310537993},{"CustomerAge":45.0,"Revenue":1735.2584324816},{"CustomerAge":46.0,"Revenue":698.9340935689},{"CustomerAge":40.0,"Revenue":4960.0676833666},{"CustomerAge":32.0,"Revenue":3299.0972675969},{"CustomerAge":34.0,"Revenue":739.9642419655},{"CustomerAge":39.0,"Revenue":693.3218359461},{"CustomerAge":64.0,"Revenue":854.0722463428},{"CustomerAge":36.0,"Revenue":2953.6113860784},{"CustomerAge":34.0,"Revenue":2652.3319108598},{"CustomerAge":59.0,"Revenue":1502.9586187576},{"CustomerAge":19.0,"Revenue":1935.3009904283},{"CustomerAge":61.0,"Revenue":447.8829166034},{"CustomerAge":33.0,"Revenue":290.6461666645},{"CustomerAge":28.0,"Revenue":405.016697027},{"CustomerAge":28.0,"Revenue":453.1503941464},{"CustomerAge":43.0,"Revenue":1160.8696516053},{"CustomerAge":46.0,"Revenue":3646.3458951674},{"CustomerAge":65.0,"Revenue":1721.6698107707},{"CustomerAge":40.0,"Revenue":4633.4402250929},{"CustomerAge":43.0,"Revenue":3290.5592526082},{"CustomerAge":32.0,"Revenue":523.4905744624},{"CustomerAge":18.0,"Revenue":295.8907744466},{"CustomerAge":64.0,"Revenue":1701.9649200566},{"CustomerAge":43.0,"Revenue":371.4068922944},{"CustomerAge":68.0,"Revenue":1291.7622648947},{"CustomerAge":67.0,"Revenue":2363.2041782596},{"CustomerAge":41.0,"Revenue":2962.4357235221},{"CustomerAge":18.0,"Revenue":6232.9280683605},{"CustomerAge":63.0,"Revenue":201.3467004038},{"CustomerAge":22.0,"Revenue":1903.040863069},{"CustomerAge":23.0,"Revenue":20.1319991444},{"CustomerAge":31.0,"Revenue":797.3961234295},{"CustomerAge":43.0,"Revenue":741.2846000379},{"CustomerAge":26.0,"Revenue":893.1560250001},{"CustomerAge":32.0,"Revenue":756.1544868522},{"CustomerAge":27.0,"Revenue":1723.4008293244},{"CustomerAge":36.0,"Revenue":3569.3532585924},{"CustomerAge":68.0,"Revenue":272.2777791223},{"CustomerAge":37.0,"Revenue":1322.4953557846},{"CustomerAge":57.0,"Revenue":144.1445219673},{"CustomerAge":68.0,"Revenue":559.9764854419},{"CustomerAge":50.0,"Revenue":456.1476234},{"CustomerAge":45.0,"Revenue":169.3792945149},{"CustomerAge":55.0,"Revenue":936.7039775528},{"CustomerAge":69.0,"Revenue":23741.9357358063},{"CustomerAge":38.0,"Revenue":83.1023347189},{"CustomerAge":65.0,"Revenue":1061.1254771896},{"CustomerAge":45.0,"Revenue":1338.3706629341},{"CustomerAge":23.0,"Revenue":459.5608742632},{"CustomerAge":65.0,"Revenue":216.4115461141},{"CustomerAge":50.0,"Revenue":2887.5438679241},{"CustomerAge":64.0,"Revenue":595.2316516379},{"CustomerAge":41.0,"Revenue":611.6041087287},{"CustomerAge":49.0,"Revenue":1719.6092930414},{"CustomerAge":68.0,"Revenue":334.3098974308},{"CustomerAge":63.0,"Revenue":165.0719406519},{"CustomerAge":38.0,"Revenue":1920.456632588},{"CustomerAge":21.0,"Revenue":2491.9682582736},{"CustomerAge":62.0,"Revenue":110.153674807},{"CustomerAge":68.0,"Revenue":2955.8695890542},{"CustomerAge":38.0,"Revenue":1594.2792152328},{"CustomerAge":60.0,"Revenue":69.2118973912},{"CustomerAge":58.0,"Revenue":2922.6555692421},{"CustomerAge":26.0,"Revenue":2437.9752088337},{"CustomerAge":21.0,"Revenue":1369.8924179012},{"CustomerAge":21.0,"Revenue":2570.3122746734},{"CustomerAge":39.0,"Revenue":3077.9853990383},{"CustomerAge":59.0,"Revenue":2262.0927382204},{"CustomerAge":59.0,"Revenue":2262.0927382204},{"CustomerAge":32.0,"Revenue":3078.1336305854},{"CustomerAge":57.0,"Revenue":779.5433857679},{"CustomerAge":42.0,"Revenue":5124.9630056024},{"CustomerAge":40.0,"Revenue":436.5834282725},{"CustomerAge":36.0,"Revenue":870.505357511},{"CustomerAge":24.0,"Revenue":502.4789704012},{"CustomerAge":53.0,"Revenue":1548.2793063606},{"CustomerAge":33.0,"Revenue":2670.84642711},{"CustomerAge":60.0,"Revenue":2346.9297257278},{"CustomerAge":25.0,"Revenue":455.8721404887},{"CustomerAge":39.0,"Revenue":4210.7187192064},{"CustomerAge":36.0,"Revenue":2649.8621203822},{"CustomerAge":67.0,"Revenue":273.9638809968},{"CustomerAge":56.0,"Revenue":1422.9482907819},{"CustomerAge":41.0,"Revenue":1105.3349059916},{"CustomerAge":40.0,"Revenue":1197.4700769773},{"CustomerAge":56.0,"Revenue":1810.4229498021},{"CustomerAge":64.0,"Revenue":2384.764662088},{"CustomerAge":43.0,"Revenue":2299.6857623548},{"CustomerAge":22.0,"Revenue":1028.1249098693},{"CustomerAge":62.0,"Revenue":2973.6923194781},{"CustomerAge":45.0,"Revenue":1771.5909354527},{"CustomerAge":21.0,"Revenue":981.9813449775},{"CustomerAge":29.0,"Revenue":39175.3250812813},{"CustomerAge":45.0,"Revenue":853.3410410975},{"CustomerAge":28.0,"Revenue":4055.0621330879},{"CustomerAge":67.0,"Revenue":2570.3122746734},{"CustomerAge":63.0,"Revenue":2808.4445679779},{"CustomerAge":39.0,"Revenue":37164.798033372},{"CustomerAge":65.0,"Revenue":2313.281047206},{"CustomerAge":33.0,"Revenue":1252.5946542034},{"CustomerAge":53.0,"Revenue":1542.187364804},{"CustomerAge":30.0,"Revenue":3926.5639940463},{"CustomerAge":30.0,"Revenue":879.5487693978},{"CustomerAge":21.0,"Revenue":1812.5812232254},{"CustomerAge":43.0,"Revenue":4210.2347014012},{"CustomerAge":33.0,"Revenue":753.849810224},{"CustomerAge":68.0,"Revenue":3009.982073859},{"CustomerAge":40.0,"Revenue":162.4965725811},{"CustomerAge":62.0,"Revenue":2478.2522954895},{"CustomerAge":57.0,"Revenue":257.0312274673},{"CustomerAge":49.0,"Revenue":855.2185969034},{"CustomerAge":36.0,"Revenue":2056.2498197387},{"CustomerAge":32.0,"Revenue":2634.4278610709},{"CustomerAge":57.0,"Revenue":573.7215530018},{"CustomerAge":54.0,"Revenue":22590.5824059178},{"CustomerAge":47.0,"Revenue":3854.2165997302},{"CustomerAge":34.0,"Revenue":262.7365680879},{"CustomerAge":22.0,"Revenue":211.7651153764},{"CustomerAge":38.0,"Revenue":2713.2127234204},{"CustomerAge":23.0,"Revenue":2722.512987631},{"CustomerAge":51.0,"Revenue":1113.9278497604},{"CustomerAge":38.0,"Revenue":3674.5903203967},{"CustomerAge":61.0,"Revenue":610.8840189499},{"CustomerAge":66.0,"Revenue":2366.9604601507},{"CustomerAge":43.0,"Revenue":3084.374729608},{"CustomerAge":37.0,"Revenue":3499.5556639813},{"CustomerAge":58.0,"Revenue":1337.7121249246},{"CustomerAge":52.0,"Revenue":506.2857706517},{"CustomerAge":51.0,"Revenue":685.3704984269},{"CustomerAge":36.0,"Revenue":3341.4059570754},{"CustomerAge":69.0,"Revenue":434.8103261555},{"CustomerAge":19.0,"Revenue":1542.187364804},{"CustomerAge":50.0,"Revenue":344.5077113454},{"CustomerAge":39.0,"Revenue":587.2682515477},{"CustomerAge":64.0,"Revenue":1324.0627003589},{"CustomerAge":19.0,"Revenue":896.1099158077},{"CustomerAge":60.0,"Revenue":356.7834616311},{"CustomerAge":55.0,"Revenue":3425.0038895331},{"CustomerAge":44.0,"Revenue":150.7501276323},{"CustomerAge":53.0,"Revenue":34002.7937993577},{"CustomerAge":22.0,"Revenue":1491.0955540236},{"CustomerAge":34.0,"Revenue":514.0624549347},{"CustomerAge":33.0,"Revenue":3327.1393921126},{"CustomerAge":68.0,"Revenue":3981.8670157788},{"CustomerAge":58.0,"Revenue":1804.3471100604},{"CustomerAge":23.0,"Revenue":621.3320319527},{"CustomerAge":32.0,"Revenue":2603.3892813939},{"CustomerAge":51.0,"Revenue":388.417475979},{"CustomerAge":43.0,"Revenue":23.1538983322},{"CustomerAge":34.0,"Revenue":1492.6970365745},{"CustomerAge":54.0,"Revenue":982.9392703287},{"CustomerAge":35.0,"Revenue":3713.4187189032},{"CustomerAge":23.0,"Revenue":901.8366787735},{"CustomerAge":44.0,"Revenue":5581.0463392299},{"CustomerAge":43.0,"Revenue":228.3914888437},{"CustomerAge":48.0,"Revenue":325.7433167577},{"CustomerAge":25.0,"Revenue":2994.7192509396},{"CustomerAge":36.0,"Revenue":1925.9335433666},{"CustomerAge":56.0,"Revenue":359.348616833},{"CustomerAge":23.0,"Revenue":321.924199573},{"CustomerAge":50.0,"Revenue":1991.6549089954},{"CustomerAge":27.0,"Revenue":2686.7408216259},{"CustomerAge":22.0,"Revenue":1401.4083720156},{"CustomerAge":60.0,"Revenue":5901.927083584},{"CustomerAge":47.0,"Revenue":999.7395733663},{"CustomerAge":51.0,"Revenue":385.6197059729},{"CustomerAge":29.0,"Revenue":5921.0036488214},{"CustomerAge":24.0,"Revenue":461.4527468941},{"CustomerAge":43.0,"Revenue":6122.1267913847},{"CustomerAge":53.0,"Revenue":3322.576858682},{"CustomerAge":65.0,"Revenue":2537.9246264231},{"CustomerAge":22.0,"Revenue":406.2494298181},{"CustomerAge":69.0,"Revenue":1285.1561373367},{"CustomerAge":52.0,"Revenue":4502.9469629067},{"CustomerAge":46.0,"Revenue":277.0631902595},{"CustomerAge":34.0,"Revenue":362.5317869638},{"CustomerAge":19.0,"Revenue":1435.2006785643},{"CustomerAge":31.0,"Revenue":1838.3793299963},{"CustomerAge":68.0,"Revenue":1291.7622648947},{"CustomerAge":60.0,"Revenue":40753.7076271619},{"CustomerAge":53.0,"Revenue":4426.0172987353},{"CustomerAge":43.0,"Revenue":166720.5197537888},{"CustomerAge":47.0,"Revenue":838.3732650338},{"CustomerAge":65.0,"Revenue":3860.2447528881},{"CustomerAge":28.0,"Revenue":2791.9304776777},{"CustomerAge":60.0,"Revenue":1595.8881335823},{"CustomerAge":27.0,"Revenue":610.8524825985},{"CustomerAge":38.0,"Revenue":2033.4227704285},{"CustomerAge":65.0,"Revenue":1516.7187276237},{"CustomerAge":65.0,"Revenue":208.077412937},{"CustomerAge":27.0,"Revenue":3127.0831348109},{"CustomerAge":40.0,"Revenue":1141.6340125068},{"CustomerAge":66.0,"Revenue":1199.7264381204},{"CustomerAge":28.0,"Revenue":958.4423566396},{"CustomerAge":30.0,"Revenue":1950.4412486998},{"CustomerAge":40.0,"Revenue":1881.5926521319},{"CustomerAge":46.0,"Revenue":1838.5536733418},{"CustomerAge":22.0,"Revenue":310.160999489},{"CustomerAge":66.0,"Revenue":3752.3440511697},{"CustomerAge":18.0,"Revenue":1036.275078629},{"CustomerAge":37.0,"Revenue":403.7657323664},{"CustomerAge":35.0,"Revenue":790.883215141},{"CustomerAge":59.0,"Revenue":399.3126168005},{"CustomerAge":55.0,"Revenue":51064.6051452212},{"CustomerAge":57.0,"Revenue":3084.374729608},{"CustomerAge":49.0,"Revenue":2056.2498197387},{"CustomerAge":67.0,"Revenue":3598.4371845427},{"CustomerAge":40.0,"Revenue":1697.8583413512},{"CustomerAge":67.0,"Revenue":115.4307987908},{"CustomerAge":62.0,"Revenue":4785.3295469272},{"CustomerAge":18.0,"Revenue":251.7304780962},{"CustomerAge":46.0,"Revenue":1240.3932886322},{"CustomerAge":45.0,"Revenue":2313.281047206},{"CustomerAge":59.0,"Revenue":5598.711870265},{"CustomerAge":54.0,"Revenue":17.1997604409},{"CustomerAge":23.0,"Revenue":3123.6259289772},{"CustomerAge":64.0,"Revenue":1285.1561373367},{"CustomerAge":43.0,"Revenue":48.5520085146},{"CustomerAge":35.0,"Revenue":1076.2325244467},{"CustomerAge":36.0,"Revenue":760.1422715424},{"CustomerAge":64.0,"Revenue":3809.3035901381},{"CustomerAge":59.0,"Revenue":1167.6030939233},{"CustomerAge":21.0,"Revenue":443.0766133958},{"CustomerAge":26.0,"Revenue":3041.1731595569},{"CustomerAge":27.0,"Revenue":182.6637238387},{"CustomerAge":34.0,"Revenue":340.8642263145},{"CustomerAge":23.0,"Revenue":1797.3568640424},{"CustomerAge":32.0,"Revenue":327.6307670486},{"CustomerAge":43.0,"Revenue":4862.8261151945},{"CustomerAge":58.0,"Revenue":1031.5274839403},{"CustomerAge":65.0,"Revenue":42.8850544016},{"CustomerAge":39.0,"Revenue":18299.9651813711},{"CustomerAge":36.0,"Revenue":2198.8654457983},{"CustomerAge":32.0,"Revenue":2932.7505154018},{"CustomerAge":22.0,"Revenue":1534.1104048506},{"CustomerAge":22.0,"Revenue":2827.3435021407},{"CustomerAge":20.0,"Revenue":1409.3080831193},{"CustomerAge":58.0,"Revenue":1542.187364804},{"CustomerAge":48.0,"Revenue":1876.5028828666},{"CustomerAge":43.0,"Revenue":2791.1374379824},{"CustomerAge":54.0,"Revenue":1288.3650388806},{"CustomerAge":53.0,"Revenue":2826.9066346673},{"CustomerAge":44.0,"Revenue":659.2458156201},{"CustomerAge":23.0,"Revenue":4125.5472016751},{"CustomerAge":24.0,"Revenue":1327.5761148676},{"CustomerAge":33.0,"Revenue":387.0890934792},{"CustomerAge":42.0,"Revenue":2165.8955001031},{"CustomerAge":58.0,"Revenue":1163.2811644819},{"CustomerAge":34.0,"Revenue":1018.3185260782},{"CustomerAge":46.0,"Revenue":97.8184529502},{"CustomerAge":28.0,"Revenue":1193.4911753197},{"CustomerAge":40.0,"Revenue":1686.4039970689},{"CustomerAge":57.0,"Revenue":3133.5155747696},{"CustomerAge":43.0,"Revenue":5503.3117025463},{"CustomerAge":24.0,"Revenue":917.1268698968},{"CustomerAge":62.0,"Revenue":3654.3172761407},{"CustomerAge":55.0,"Revenue":2164.9756437899},{"CustomerAge":39.0,"Revenue":464.2794639546},{"CustomerAge":49.0,"Revenue":1304.9730980404},{"CustomerAge":28.0,"Revenue":845.094895456},{"CustomerAge":43.0,"Revenue":2370.611829837},{"CustomerAge":66.0,"Revenue":1222.846468245},{"CustomerAge":53.0,"Revenue":1138.7695108201},{"CustomerAge":40.0,"Revenue":972.7861124051},{"CustomerAge":30.0,"Revenue":2211.920102598},{"CustomerAge":62.0,"Revenue":376.2630691227},{"CustomerAge":62.0,"Revenue":110.153674807},{"CustomerAge":43.0,"Revenue":3823.8372050212},{"CustomerAge":46.0,"Revenue":860.5325503238},{"CustomerAge":45.0,"Revenue":1309.7221941414},{"CustomerAge":51.0,"Revenue":1285.1561373367},{"CustomerAge":55.0,"Revenue":3800.7837091038},{"CustomerAge":40.0,"Revenue":2964.8659120669},{"CustomerAge":52.0,"Revenue":1066.1524600769},{"CustomerAge":18.0,"Revenue":1799.2185922714},{"CustomerAge":67.0,"Revenue":1277.0434895663},{"CustomerAge":44.0,"Revenue":95.9694894052},{"CustomerAge":31.0,"Revenue":2229.247289452},{"CustomerAge":63.0,"Revenue":2544.5887562261},{"CustomerAge":37.0,"Revenue":62.08039326},{"CustomerAge":40.0,"Revenue":490.760428578},{"CustomerAge":68.0,"Revenue":3554.7236357338},{"CustomerAge":60.0,"Revenue":2886.5668298842},{"CustomerAge":43.0,"Revenue":979.4014928713},{"CustomerAge":45.0,"Revenue":1054.1948494399},{"CustomerAge":49.0,"Revenue":325.9679759709},{"CustomerAge":34.0,"Revenue":573.7836062037},{"CustomerAge":26.0,"Revenue":946.4514493608},{"CustomerAge":60.0,"Revenue":353.5793621694},{"CustomerAge":48.0,"Revenue":913.0047218245},{"CustomerAge":22.0,"Revenue":586.0414985635},{"CustomerAge":50.0,"Revenue":5177.6213968947},{"CustomerAge":27.0,"Revenue":653.5295668052},{"CustomerAge":37.0,"Revenue":2293.599784511},{"CustomerAge":65.0,"Revenue":2820.3304802701},{"CustomerAge":44.0,"Revenue":965.1807261211},{"CustomerAge":40.0,"Revenue":4233.2305408016},{"CustomerAge":54.0,"Revenue":1960.7991294857},{"CustomerAge":35.0,"Revenue":1019.4730757242},{"CustomerAge":39.0,"Revenue":198.2968279569},{"CustomerAge":64.0,"Revenue":1332.2236598979},{"CustomerAge":46.0,"Revenue":5468.6056982872},{"CustomerAge":46.0,"Revenue":182.6357973899},{"CustomerAge":22.0,"Revenue":1456.7138330842},{"CustomerAge":64.0,"Revenue":1285.1561373367},{"CustomerAge":18.0,"Revenue":1465.8964829107},{"CustomerAge":23.0,"Revenue":2162.378758402},{"CustomerAge":32.0,"Revenue":464.2201799143},{"CustomerAge":58.0,"Revenue":454.1543521388},{"CustomerAge":30.0,"Revenue":1024.6997324803},{"CustomerAge":25.0,"Revenue":2049.5304701114},{"CustomerAge":58.0,"Revenue":1031.5274839403},{"CustomerAge":57.0,"Revenue":1949.4484173544},{"CustomerAge":60.0,"Revenue":3043.0223159556},{"CustomerAge":62.0,"Revenue":586.4795217166},{"CustomerAge":21.0,"Revenue":4401.367382945},{"CustomerAge":28.0,"Revenue":1156.2979679515},{"CustomerAge":64.0,"Revenue":3591.2444198976},{"CustomerAge":34.0,"Revenue":596.7024999633},{"CustomerAge":54.0,"Revenue":1941.4305669595},{"CustomerAge":63.0,"Revenue":153.809523372},{"CustomerAge":53.0,"Revenue":632.5731687289},{"CustomerAge":69.0,"Revenue":361.8441232901},{"CustomerAge":37.0,"Revenue":2540.3300123124},{"CustomerAge":65.0,"Revenue":1838.243195116},{"CustomerAge":55.0,"Revenue":514.0624549347},{"CustomerAge":63.0,"Revenue":1057.3032690539},{"CustomerAge":52.0,"Revenue":5475.4082122712},{"CustomerAge":56.0,"Revenue":2005.5751212424},{"CustomerAge":41.0,"Revenue":3109.6515269952},{"CustomerAge":39.0,"Revenue":347.2543755323},{"CustomerAge":39.0,"Revenue":681.1376898176},{"CustomerAge":19.0,"Revenue":1490.0848726718},{"CustomerAge":18.0,"Revenue":134.3812668639},{"CustomerAge":32.0,"Revenue":1437.5702592433},{"CustomerAge":29.0,"Revenue":723.9645518646},{"CustomerAge":20.0,"Revenue":3259.6051781392},{"CustomerAge":27.0,"Revenue":343.6107635741},{"CustomerAge":37.0,"Revenue":5882.1021191666},{"CustomerAge":34.0,"Revenue":1193.9137833774},{"CustomerAge":56.0,"Revenue":868.2656027121},{"CustomerAge":49.0,"Revenue":3393.7572629667},{"CustomerAge":58.0,"Revenue":329.9323829045},{"CustomerAge":43.0,"Revenue":643.8906840774},{"CustomerAge":69.0,"Revenue":1285.1561373367},{"CustomerAge":57.0,"Revenue":771.093682402},{"CustomerAge":47.0,"Revenue":5990.2833669905},{"CustomerAge":30.0,"Revenue":1417.1982819419},{"CustomerAge":66.0,"Revenue":580.3701750595},{"CustomerAge":50.0,"Revenue":1898.2890146543},{"CustomerAge":34.0,"Revenue":284.4824098963},{"CustomerAge":49.0,"Revenue":156.902258507},{"CustomerAge":38.0,"Revenue":2737.6642752331},{"CustomerAge":37.0,"Revenue":1322.4953557846},{"CustomerAge":51.0,"Revenue":244.2004181587},{"CustomerAge":43.0,"Revenue":2598.8297161928},{"CustomerAge":43.0,"Revenue":1987.9428422434},{"CustomerAge":20.0,"Revenue":197.1528276005},{"CustomerAge":33.0,"Revenue":43601.7334755855},{"CustomerAge":42.0,"Revenue":1568.3979099701},{"CustomerAge":59.0,"Revenue":1197.4349962044},{"CustomerAge":51.0,"Revenue":4366.2022244807},{"CustomerAge":43.0,"Revenue":1542.187364804},{"CustomerAge":18.0,"Revenue":1612.6076596054},{"CustomerAge":69.0,"Revenue":732.8418405131},{"CustomerAge":20.0,"Revenue":1303.7151939959},{"CustomerAge":24.0,"Revenue":551.392461382},{"CustomerAge":41.0,"Revenue":1335.8518646399},{"CustomerAge":21.0,"Revenue":1812.5812232254},{"CustomerAge":29.0,"Revenue":1794.4343498104},{"CustomerAge":42.0,"Revenue":2553.2134176983},{"CustomerAge":63.0,"Revenue":2401.0977412814},{"CustomerAge":43.0,"Revenue":321.2035201568},{"CustomerAge":34.0,"Revenue":1104.5471552864},{"CustomerAge":39.0,"Revenue":1273.5045163263},{"CustomerAge":35.0,"Revenue":4128.3054869411},{"CustomerAge":63.0,"Revenue":1689.4259515481},{"CustomerAge":43.0,"Revenue":2975.9212569671},{"CustomerAge":39.0,"Revenue":2310.3483715223},{"CustomerAge":34.0,"Revenue":3759.6802481717},{"CustomerAge":65.0,"Revenue":1788.9128963537},{"CustomerAge":26.0,"Revenue":1038.3246978018},{"CustomerAge":35.0,"Revenue":100.8334382181},{"CustomerAge":65.0,"Revenue":3780.6450077956},{"CustomerAge":40.0,"Revenue":1799.2185922714},{"CustomerAge":23.0,"Revenue":2056.2498197387},{"CustomerAge":54.0,"Revenue":1000.9341749322},{"CustomerAge":53.0,"Revenue":1992.8153017494},{"CustomerAge":37.0,"Revenue":369.8887570906},{"CustomerAge":29.0,"Revenue":801.9558764236},{"CustomerAge":67.0,"Revenue":708.4896915041},{"CustomerAge":56.0,"Revenue":1422.9482907819},{"CustomerAge":69.0,"Revenue":368.3831502325},{"CustomerAge":34.0,"Revenue":262.7365680879},{"CustomerAge":64.0,"Revenue":173.7767761611},{"CustomerAge":31.0,"Revenue":2953.2843379673},{"CustomerAge":49.0,"Revenue":430.205545454},{"CustomerAge":43.0,"Revenue":5950.2063398604},{"CustomerAge":47.0,"Revenue":1980.5759125502},{"CustomerAge":68.0,"Revenue":1746.7044572659},{"CustomerAge":44.0,"Revenue":21.5615326763},{"CustomerAge":18.0,"Revenue":1820.7834372845},{"CustomerAge":41.0,"Revenue":248.8654339887},{"CustomerAge":69.0,"Revenue":232.6054562366},{"CustomerAge":24.0,"Revenue":387.8233097612},{"CustomerAge":55.0,"Revenue":786.4677433377},{"CustomerAge":40.0,"Revenue":4243.8255172772},{"CustomerAge":22.0,"Revenue":1156.4925523416},{"CustomerAge":19.0,"Revenue":889.0710050387},{"CustomerAge":41.0,"Revenue":2828.2949825799},{"CustomerAge":56.0,"Revenue":1580.3093250034},{"CustomerAge":46.0,"Revenue":495.8779056662},{"CustomerAge":38.0,"Revenue":679.5072899465},{"CustomerAge":55.0,"Revenue":1401.3558814972},{"CustomerAge":49.0,"Revenue":2204.8787905714},{"CustomerAge":45.0,"Revenue":73.2453941264},{"CustomerAge":33.0,"Revenue":3473.1845906115},{"CustomerAge":63.0,"Revenue":403.0798755527},{"CustomerAge":55.0,"Revenue":3637.8351300217},{"CustomerAge":68.0,"Revenue":246.5152476117},{"CustomerAge":27.0,"Revenue":764.159899534},{"CustomerAge":20.0,"Revenue":3791.48275129},{"CustomerAge":28.0,"Revenue":765.8872495974},{"CustomerAge":42.0,"Revenue":2619.2626759191},{"CustomerAge":66.0,"Revenue":2686.2428247821},{"CustomerAge":28.0,"Revenue":581.8382167721},{"CustomerAge":34.0,"Revenue":830.9685436642},{"CustomerAge":44.0,"Revenue":2056.2498197387},{"CustomerAge":27.0,"Revenue":938.7497316793},{"CustomerAge":37.0,"Revenue":2485.6452659294},{"CustomerAge":50.0,"Revenue":878.7645197805},{"CustomerAge":34.0,"Revenue":2063.3549983209},{"CustomerAge":26.0,"Revenue":684.7809244891},{"CustomerAge":20.0,"Revenue":1473.8170310128},{"CustomerAge":25.0,"Revenue":159.854710265},{"CustomerAge":46.0,"Revenue":3858.9930808888},{"CustomerAge":51.0,"Revenue":1644.6649421307},{"CustomerAge":50.0,"Revenue":129.2819680749},{"CustomerAge":47.0,"Revenue":3306.0335063923},{"CustomerAge":47.0,"Revenue":251.9688798239},{"CustomerAge":65.0,"Revenue":2561.5431826237},{"CustomerAge":64.0,"Revenue":497.8752534739},{"CustomerAge":53.0,"Revenue":396.1562928944},{"CustomerAge":43.0,"Revenue":13156.2943654283},{"CustomerAge":68.0,"Revenue":1659.5401328545},{"CustomerAge":28.0,"Revenue":1028.5503508428},{"CustomerAge":52.0,"Revenue":4502.9469629067},{"CustomerAge":30.0,"Revenue":2430.8266346645},{"CustomerAge":32.0,"Revenue":3923.8430054978},{"CustomerAge":29.0,"Revenue":1657.6735940759},{"CustomerAge":61.0,"Revenue":587.3811333706},{"CustomerAge":57.0,"Revenue":5117.8551843063},{"CustomerAge":47.0,"Revenue":5832.6122224982},{"CustomerAge":21.0,"Revenue":3939.9053789361},{"CustomerAge":60.0,"Revenue":1269.8855845456},{"CustomerAge":62.0,"Revenue":2954.3306915954},{"CustomerAge":52.0,"Revenue":471.9349163561},{"CustomerAge":22.0,"Revenue":640.9705265161},{"CustomerAge":23.0,"Revenue":1797.3568640424},{"CustomerAge":53.0,"Revenue":32.1559555518},{"CustomerAge":30.0,"Revenue":1902.9316074691},{"CustomerAge":43.0,"Revenue":2770.86199414},{"CustomerAge":43.0,"Revenue":398.6400082584},{"CustomerAge":67.0,"Revenue":2724.0611690114},{"CustomerAge":60.0,"Revenue":3341.4059570754},{"CustomerAge":26.0,"Revenue":1369.75383981},{"CustomerAge":49.0,"Revenue":900.7336406021},{"CustomerAge":27.0,"Revenue":4258.6796988099},{"CustomerAge":25.0,"Revenue":116.5601820026},{"CustomerAge":38.0,"Revenue":679.5072899465},{"CustomerAge":27.0,"Revenue":2686.7408216259},{"CustomerAge":44.0,"Revenue":994.9229080866},{"CustomerAge":37.0,"Revenue":6262.7097690902},{"CustomerAge":39.0,"Revenue":147.2182914797},{"CustomerAge":52.0,"Revenue":1063.4245535507},{"CustomerAge":24.0,"Revenue":2073.6466211348},{"CustomerAge":28.0,"Revenue":2663.8349750649},{"CustomerAge":27.0,"Revenue":1823.7339858919},{"CustomerAge":24.0,"Revenue":1802.8592333679},{"CustomerAge":66.0,"Revenue":382.8938825127},{"CustomerAge":18.0,"Revenue":685.0965575391},{"CustomerAge":47.0,"Revenue":1930.5406898689},{"CustomerAge":28.0,"Revenue":5578.9813145721},{"CustomerAge":22.0,"Revenue":2587.5936514703},{"CustomerAge":67.0,"Revenue":567.5506999442},{"CustomerAge":56.0,"Revenue":1429.8496794618},{"CustomerAge":31.0,"Revenue":364.1790085722},{"CustomerAge":42.0,"Revenue":649.7138955445},{"CustomerAge":45.0,"Revenue":1542.187364804},{"CustomerAge":30.0,"Revenue":5526.8424249776},{"CustomerAge":61.0,"Revenue":447.8829166034},{"CustomerAge":20.0,"Revenue":1976.550493665},{"CustomerAge":31.0,"Revenue":618.769368334},{"CustomerAge":50.0,"Revenue":1770.5339767776},{"CustomerAge":58.0,"Revenue":257.0312274673},{"CustomerAge":53.0,"Revenue":2023.4048351039},{"CustomerAge":25.0,"Revenue":2032.1268467567},{"CustomerAge":32.0,"Revenue":156.7871821974},{"CustomerAge":66.0,"Revenue":2930.7467121397},{"CustomerAge":65.0,"Revenue":3834.5360198738},{"CustomerAge":48.0,"Revenue":1937.5744015049},{"CustomerAge":29.0,"Revenue":2240.2017441077},{"CustomerAge":50.0,"Revenue":101.7948032896},{"CustomerAge":64.0,"Revenue":707.2977509357},{"CustomerAge":62.0,"Revenue":2320.6351032461},{"CustomerAge":21.0,"Revenue":279.9503478172},{"CustomerAge":39.0,"Revenue":1678.6315819099},{"CustomerAge":41.0,"Revenue":3341.4059570754},{"CustomerAge":52.0,"Revenue":1139.9966650337},{"CustomerAge":49.0,"Revenue":1686.1214739047},{"CustomerAge":27.0,"Revenue":938.253186351},{"CustomerAge":49.0,"Revenue":780.3456706128},{"CustomerAge":66.0,"Revenue":1285.1561373367},{"CustomerAge":31.0,"Revenue":728.6042193751},{"CustomerAge":68.0,"Revenue":2081.9028047458},{"CustomerAge":43.0,"Revenue":2598.8297161928},{"CustomerAge":24.0,"Revenue":1374.71126778},{"CustomerAge":43.0,"Revenue":2453.4190764986},{"CustomerAge":20.0,"Revenue":4306.1679033286},{"CustomerAge":33.0,"Revenue":761.7843868104},{"CustomerAge":27.0,"Revenue":1275.3831525041},{"CustomerAge":42.0,"Revenue":3427.2741400869},{"CustomerAge":43.0,"Revenue":3084.374729608},{"CustomerAge":33.0,"Revenue":2670.84642711},{"CustomerAge":54.0,"Revenue":2978.8815066573},{"CustomerAge":20.0,"Revenue":636.5541060475},{"CustomerAge":58.0,"Revenue":530.6881248745},{"CustomerAge":19.0,"Revenue":202.3979041035},{"CustomerAge":43.0,"Revenue":175.2993179169},{"CustomerAge":46.0,"Revenue":600.5450329911},{"CustomerAge":21.0,"Revenue":1412.93314475},{"CustomerAge":68.0,"Revenue":1805.5800719855},{"CustomerAge":37.0,"Revenue":2485.6452659294},{"CustomerAge":62.0,"Revenue":2230.5925143489},{"CustomerAge":37.0,"Revenue":190.6496675413},{"CustomerAge":57.0,"Revenue":234.6813689323},{"CustomerAge":67.0,"Revenue":2100.7042127859},{"CustomerAge":43.0,"Revenue":522.7558296352},{"CustomerAge":42.0,"Revenue":1378.704189404},{"CustomerAge":43.0,"Revenue":4210.2347014012},{"CustomerAge":38.0,"Revenue":1546.7156309254},{"CustomerAge":65.0,"Revenue":3118.3287062749},{"CustomerAge":47.0,"Revenue":3021.9903270193},{"CustomerAge":65.0,"Revenue":216.4115461141},{"CustomerAge":59.0,"Revenue":344.8972404324},{"CustomerAge":67.0,"Revenue":1463.8649616215},{"CustomerAge":63.0,"Revenue":1350.7973121096},{"CustomerAge":45.0,"Revenue":1313.8616616452},{"CustomerAge":39.0,"Revenue":3794.4133276242},{"CustomerAge":67.0,"Revenue":3246.845654721},{"CustomerAge":58.0,"Revenue":493.4385737335},{"CustomerAge":47.0,"Revenue":2485.7104406383},{"CustomerAge":22.0,"Revenue":274.9889399429},{"CustomerAge":54.0,"Revenue":1671.1048036099},{"CustomerAge":62.0,"Revenue":1496.7966578525},{"CustomerAge":25.0,"Revenue":1834.5653507572},{"CustomerAge":23.0,"Revenue":6246.0656613609},{"CustomerAge":26.0,"Revenue":1028.2238067746},{"CustomerAge":58.0,"Revenue":2680.186294233},{"CustomerAge":36.0,"Revenue":1917.5508772713},{"CustomerAge":44.0,"Revenue":1542.187364804},{"CustomerAge":69.0,"Revenue":3708.3654612518},{"CustomerAge":52.0,"Revenue":4679.0353643704},{"CustomerAge":21.0,"Revenue":1028.1249098693},{"CustomerAge":37.0,"Revenue":892.4107025835},{"CustomerAge":22.0,"Revenue":27126.9297842428},{"CustomerAge":42.0,"Revenue":2329.0714196468},{"CustomerAge":34.0,"Revenue":5800.3593301566},{"CustomerAge":64.0,"Revenue":3338.4941590752},{"CustomerAge":59.0,"Revenue":1653.1421372599},{"CustomerAge":46.0,"Revenue":1945.0033952441},{"CustomerAge":47.0,"Revenue":230.0626813747},{"CustomerAge":27.0,"Revenue":1082.8840680714},{"CustomerAge":26.0,"Revenue":688.9648767989},{"CustomerAge":32.0,"Revenue":1285.1561373367},{"CustomerAge":27.0,"Revenue":368.4332802668},{"CustomerAge":57.0,"Revenue":2131.6923725875},{"CustomerAge":43.0,"Revenue":1567.2049742465},{"CustomerAge":25.0,"Revenue":965.1871208228},{"CustomerAge":19.0,"Revenue":1799.2185922714},{"CustomerAge":48.0,"Revenue":1965.4137283536},{"CustomerAge":63.0,"Revenue":2025.5228252161},{"CustomerAge":19.0,"Revenue":3444.0540483761},{"CustomerAge":21.0,"Revenue":5524.3932629847},{"CustomerAge":44.0,"Revenue":2888.5084613968},{"CustomerAge":42.0,"Revenue":1103.3311396059},{"CustomerAge":41.0,"Revenue":514.1108564613},{"CustomerAge":64.0,"Revenue":1458.1053502113},{"CustomerAge":20.0,"Revenue":2410.3163638232},{"CustomerAge":36.0,"Revenue":1542.187364804},{"CustomerAge":24.0,"Revenue":955.4498144309},{"CustomerAge":58.0,"Revenue":186.4591261728},{"CustomerAge":42.0,"Revenue":4416.9942601217},{"CustomerAge":20.0,"Revenue":207.6644737041},{"CustomerAge":65.0,"Revenue":2108.5339595118},{"CustomerAge":45.0,"Revenue":1937.5597547268},{"CustomerAge":57.0,"Revenue":320.7109753744},{"CustomerAge":55.0,"Revenue":3598.4371845427},{"CustomerAge":55.0,"Revenue":6347.2080542886},{"CustomerAge":30.0,"Revenue":2631.2058793853},{"CustomerAge":64.0,"Revenue":5021.861776193},{"CustomerAge":43.0,"Revenue":2773.1155246927},{"CustomerAge":59.0,"Revenue":1709.912523941},{"CustomerAge":37.0,"Revenue":1655.0500911262},{"CustomerAge":21.0,"Revenue":2141.0351858555},{"CustomerAge":60.0,"Revenue":723.5889408389},{"CustomerAge":39.0,"Revenue":6368.1857253282},{"CustomerAge":21.0,"Revenue":2680.1983068964},{"CustomerAge":60.0,"Revenue":1619.1663033308},{"CustomerAge":56.0,"Revenue":3965.8825480753},{"CustomerAge":32.0,"Revenue":2932.7505154018},{"CustomerAge":25.0,"Revenue":180.680580204},{"CustomerAge":43.0,"Revenue":486.9082466169},{"CustomerAge":56.0,"Revenue":868.2656027121},{"CustomerAge":57.0,"Revenue":786.1176692717},{"CustomerAge":22.0,"Revenue":2827.3435021407},{"CustomerAge":61.0,"Revenue":5732.9364160412},{"CustomerAge":43.0,"Revenue":2553.6129683464},{"CustomerAge":30.0,"Revenue":1207.0904201993},{"CustomerAge":29.0,"Revenue":1285.1561373367},{"CustomerAge":59.0,"Revenue":494.9171201021},{"CustomerAge":59.0,"Revenue":2638.5859545702},{"CustomerAge":39.0,"Revenue":200.786728071},{"CustomerAge":19.0,"Revenue":1542.187364804},{"CustomerAge":19.0,"Revenue":958.2990586573},{"CustomerAge":32.0,"Revenue":3871.1363318159},{"CustomerAge":44.0,"Revenue":1118.2224591314},{"CustomerAge":19.0,"Revenue":5414.8102852584},{"CustomerAge":41.0,"Revenue":316.8548174963},{"CustomerAge":66.0,"Revenue":3066.7861755896},{"CustomerAge":56.0,"Revenue":5251.2156931096},{"CustomerAge":41.0,"Revenue":2570.3122746734},{"CustomerAge":67.0,"Revenue":3546.9041902909},{"CustomerAge":66.0,"Revenue":2630.2142225744},{"CustomerAge":64.0,"Revenue":319.2044631628},{"CustomerAge":24.0,"Revenue":2072.7733439118},{"CustomerAge":49.0,"Revenue":2994.1636741049},{"CustomerAge":49.0,"Revenue":1927.0280932022},{"CustomerAge":36.0,"Revenue":1083.6476610849},{"CustomerAge":63.0,"Revenue":403.0798755527},{"CustomerAge":60.0,"Revenue":1595.8881335823},{"CustomerAge":62.0,"Revenue":585.9726879774},{"CustomerAge":66.0,"Revenue":900.0070243991},{"CustomerAge":25.0,"Revenue":4020.3477466259},{"CustomerAge":27.0,"Revenue":328.7139667868},{"CustomerAge":50.0,"Revenue":2727.1533902751},{"CustomerAge":66.0,"Revenue":2570.3122746734},{"CustomerAge":38.0,"Revenue":820.0180889201},{"CustomerAge":63.0,"Revenue":3653.135268897},{"CustomerAge":43.0,"Revenue":1843.801244265},{"CustomerAge":46.0,"Revenue":1536.2896295677},{"CustomerAge":50.0,"Revenue":4416.5648729738},{"CustomerAge":58.0,"Revenue":303.4928536399},{"CustomerAge":26.0,"Revenue":459.352674262}];
+
+        // Chart defaults for dark theme
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.05)';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+
+        // 1. Revenue by Category (Bar Chart)
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'bar',
+            data: {
+                labels: catData.map(d => d.Category),
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: catData.map(d => d['Total Sales']),
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderColor: '#3b82f6',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    hoverBackgroundColor: '#3b82f6'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // 2. Revenue by Region (Doughnut Chart)
+        new Chart(document.getElementById('regionChart'), {
+            type: 'doughnut',
+            data: {
+                labels: regData.map(d => d.Region),
+                datasets: [{
+                    data: regData.map(d => d['Total Sales']),
+                    backgroundColor: [
+                        '#3b82f6', '#8b5cf6', '#ec4899', '#10b981', '#f59e0b'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: { position: 'right' }
+                }
+            }
+        });
+
+        // 3. Time Series Chart (Line Chart with Gradient)
+        const ctxTime = document.getElementById('timeSeriesChart').getContext('2d');
+        const gradientTime = ctxTime.createLinearGradient(0, 0, 0, 400);
+        gradientTime.addColorStop(0, 'rgba(236, 72, 153, 0.5)');
+        gradientTime.addColorStop(1, 'rgba(236, 72, 153, 0.0)');
+
+        new Chart(ctxTime, {
+            type: 'line',
+            data: {
+                labels: dailyData.map(d => d.Day),
+                datasets: [{
+                    label: 'Daily Revenue ($)',
+                    data: dailyData.map(d => d['Total Sales']),
+                    borderColor: '#ec4899',
+                    backgroundColor: gradientTime,
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // 4. Scatter Chart (Age vs Revenue)
+        new Chart(document.getElementById('scatterChart'), {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Transactions',
+                    data: scatterData.map(d => ({ x: d.CustomerAge, y: d.Revenue })),
+                    backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                    borderColor: '#10b981',
+                    borderWidth: 1,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Customer Age' } },
+                    y: { title: { display: true, text: 'Revenue ($)' } }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

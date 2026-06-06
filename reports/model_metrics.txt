@@ -1,0 +1,2 @@
+Decision Tree Accuracy: 0.8400
+Random Forest Accuracy: 0.9060
